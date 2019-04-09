@@ -189,14 +189,18 @@ class RouteCollection implements \IteratorAggregate, \Countable
     /**
      * Sets a condition on all routes.
      *
-     * Existing conditions will be overridden.
+     * Existing conditions will be refreshed
      *
      * @param string $condition The condition
      */
     public function setCondition($condition)
     {
         foreach ($this->routes as $route) {
-            $route->setCondition($condition);
+            if ($route->getCondition()) {
+                $route->setCondition(sprintf('( %s ) and ( %s )', $condition, $route->getCondition()));
+            } else {
+                $route->setCondition($condition);
+            }
         }
     }
 
